@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "baseWkWebVC.h"
 
 @interface AppDelegate ()
 
@@ -21,7 +22,8 @@
     // Override point for customization after application launch.
     [self.window makeKeyAndVisible];
     self.window.backgroundColor=[UIColor whiteColor];
-    
+    baseWkWebVC *web=[[baseWkWebVC alloc]init];
+    self.window.rootViewController=web;
     return YES;
 }
 

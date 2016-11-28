@@ -8,10 +8,10 @@
 
 #import "baseWkWebVC.h"
 
-
 #define ScreenWidth                         [[UIScreen mainScreen] bounds].size.width
 #define ScreenHeight                        [[UIScreen mainScreen] bounds].size.height
-
+//JS调用OC方法的标识  实际应用中可根据情况不同模块定义多个不同的标识
+#define FunctionNameTag  @"OCModel"
 
 @interface baseWkWebVC ()
 //几个显示的LB
@@ -51,9 +51,9 @@
         
         // 通过JS与webview内容交互
         config.userContentController = [[WKUserContentController alloc] init];
-        // 注入JS对象名称AppModel，当JS通过AppModel来调用时，
+        // 注入JS对象名称FunctionNameTag，当JS通过FunctionNameTag来调用时，
         // 我们可以在WKScriptMessageHandler代理中接收到
-        [config.userContentController addScriptMessageHandler:self name:@"AppModel"];
+        [config.userContentController addScriptMessageHandler:self name:FunctionNameTag];
         
 
         self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
@@ -72,7 +72,7 @@
         
         self.secondNBLB=[[UILabel alloc]init];
         self.secondNBLB.font=[UIFont systemFontOfSize:15];
-        self.secondNBLB.textColor=[UIColor yellowColor];
+        self.secondNBLB.textColor=[UIColor blueColor];
         
         self.resultLB=[[UILabel alloc]init];
         self.resultLB.font=[UIFont systemFontOfSize:15];
@@ -92,6 +92,11 @@
     
     
     [self setUI];
+    
+    NSString *path=[[NSBundle mainBundle] pathForResource:@"index" ofType:@"html"];
+    NSString *htmlString = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+    [self.webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:path]];
+
     
   //键盘监听
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -124,17 +129,34 @@
     
     UIButton *clearBT=[UIButton buttonWithType:UIButtonTypeCustom];
     [clearBT setTitle:@"清除" forState:UIControlStateNormal];
-    clearBT.frame=CGRectMake((ScreenWidth-100)/2, ScreenHeight-40, 100, 40);
+    clearBT.backgroundColor=[UIColor blueColor];
+    
+    clearBT.frame=CGRectMake(0, ScreenHeight-40, ScreenWidth, 40);
     [self.view addSubview:clearBT];
     [clearBT addTarget:self action:@selector(clearJsFunction) forControlEvents:UIControlEventTouchUpInside];
 }
 
+#pragma mark JS操作OC
+-(void)setFirstNBValueAndOperation:(NSString *)NBAndOperation
+{
+    
+}
+-(void)setsecondNBAndResult:(NSString *)NBAndOperation
+{
+
+}
+#pragma mark OC操作JS
 -(void)clearJsFunction
 {
     //javaScriptString是JS方法名，completionHandler是异步回调block
     [self.webView evaluateJavaScript:@"clearAllData()" completionHandler:^(id  result,NSError *error){
         NSLog(@"%@",error);
-        
+        if (!error) {
+            self.firstNBLB.text=nil;
+            self.secondNBLB.text=nil;
+            self.operationLB.text=nil;
+            self.resultLB.text=nil;
+        }
     }];
 }
 
@@ -310,15 +332,23 @@
 {
     //
     NSLog(@"JS 调用了 %@ 方法，传回参数 %@",message.name,message.body);
-    UserElement *Ele=[[SharedUserDefault sharedInstance] getUserInfo];
-    NSString *memberId=Ele.memberId;
-    memberId= (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( kCFAllocatorDefault, (CFStringRef)memberId, NULL, NULL,  kCFStringEncodingUTF8 ));
-    NSMutableString *str=[NSMutableString stringWithString:memberId];
-    [self.webView evaluateJavaScript:[NSString stringWithFormat:@"getMemberid(%@)",Ele.memberId ] completionHandler:^(id  result,NSError *error){
-        
-        NSLog(@"re");
-        
-    }];
+    if ([message.name isEqualToString:FunctionNameTag]) {
+        NSDictionary *dic=(NSDictionary *)message.body;
+        if ([dic[@"functionName"] isEqualToString:@"operation"]) {
+            self.firstNBLB.text=[NSString stringWithFormat:@"%@",dic[@"firstNB"]];
+            NSArray *arr=[NSArray arrayWithObjects:@"+",@"-",@"×",@"/",nil];
+            self.operationLB.text=arr[[dic[@"operation"] intValue]-1];
+            
+        }
+        else if([dic[@"functionName"] isEqualToString:@"result"])
+        {
+            self.secondNBLB.text=[NSString stringWithFormat:@"%@",dic[@"secondNB"]];
+           
+            self.resultLB.text=[NSString stringWithFormat:@"%@",dic[@"result"]];;
+
+        }
+    }
+   
 
 }
 - (void)evaluateJavaScript:(NSString *)javaScriptString completionHandler:(void (^)(id, NSError *))completionHandler

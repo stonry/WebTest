@@ -15,6 +15,7 @@
 		3C5C592E1DE294EA008EF310 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C5C592C1DE294EA008EF310 /* LaunchScreen.storyboard */; };
 		3C5C59381DE29590008EF310 /* baseWkWebVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C5C59371DE29590008EF310 /* baseWkWebVC.m */; };
 		3C5C593B1DE295ED008EF310 /* WKWebView+AccessoryHiding.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C5C593A1DE295ED008EF310 /* WKWebView+AccessoryHiding.m */; };
+		3C5C593D1DEC4039008EF310 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 3C5C593C1DEC4039008EF310 /* index.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		3C5C59371DE29590008EF310 /* baseWkWebVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = baseWkWebVC.m; sourceTree = "<group>"; };
 		3C5C59391DE295ED008EF310 /* WKWebView+AccessoryHiding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+AccessoryHiding.h"; sourceTree = "<group>"; };
 		3C5C593A1DE295ED008EF310 /* WKWebView+AccessoryHiding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+AccessoryHiding.m"; sourceTree = "<group>"; };
+		3C5C593C1DEC4039008EF310 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 			children = (
 				3C5C59211DE294EA008EF310 /* AppDelegate.h */,
 				3C5C59221DE294EA008EF310 /* AppDelegate.m */,
+				3C5C593C1DEC4039008EF310 /* index.html */,
 				3C5C59361DE29590008EF310 /* baseWkWebVC.h */,
 				3C5C59371DE29590008EF310 /* baseWkWebVC.m */,
 				3C5C59391DE295ED008EF310 /* WKWebView+AccessoryHiding.h */,
@@ -148,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C5C592E1DE294EA008EF310 /* LaunchScreen.storyboard in Resources */,
+				3C5C593D1DEC4039008EF310 /* index.html in Resources */,
 				3C5C592B1DE294EA008EF310 /* Assets.xcassets in Resources */,
 				3C5C59291DE294EA008EF310 /* Main.storyboard in Resources */,
 			);

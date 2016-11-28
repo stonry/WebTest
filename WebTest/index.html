@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>通信</title>
+    
+</head>
+<body>
+	
+ <span id='erer'>显示框</span> 
+<script type="text/javascript">
+    	 	
+   		document.addEventListener('plusready', function(){
+   			//console.log("所有plus api都应该在此事件发生后调用，否则会出现plus is undefined。"
+   			//alert("aaaaaa");
+   		});
+   		var firstNB;//因子1
+   		var secondNB;//因子2
+   		var operation;//运算符  1234对应 + — * /
+   		var numberArr=['1','2','3','4','5','6','7','8','9','0','.'];
+   		var operationArr=['+','-','*','/','='];
+   		var body=document.body;//获取body
+   		var hhh=document.getElementById('erer');
+   		var tempOP=0;
+   		//嵌套循环 
+   		for (var i=0;i<4;i++) {
+   			for(var j=0;j<4;j++)
+   			{
+   			if(j<3){//左侧三列数字部分
+   				var bt=document.createElement("input");
+   				bt.style.position='absolute';
+   				bt.style.backgroundColor='red';
+   				bt.style.width='50px';
+   				bt.style.height='50px';
+   				bt.setAttribute('value',numberArr[i*3+j]);
+   				body.appendChild(bt);
+   				bt.style.top=100+i*60+'px';
+   				bt.style.left=10+j*60+'px';
+   				bt.setAttribute('type','button');
+   				
+   				if((i==3)&&(j==2))//最后一行中 特殊的等号绑定结果函数
+   				{
+   				bt.setAttribute('value',operationArr[4]);
+  				bt.setAttribute('onclick','getResult()');
+   				}
+   				else{//其他数字按钮绑定输入数字函数
+   					var NBvalue=numberArr[i*3+j];
+   				bt.setAttribute('onclick','setFristNumber('+NBvalue+')');
+   				}
+   			}
+   			else
+   			{//最右侧的一列 全部是操作符按钮  绑定设置操作的函数
+   					
+   				var OPbt=document.createElement("input");
+   				OPbt.style.position='absolute';
+   				OPbt.style.backgroundColor='red';
+   				OPbt.style.width='50px';
+   				OPbt.style.height='50px';
+   				OPbt.setAttribute('value',operationArr[i]);
+   				OPbt.style.top=100+i*60+'px';
+   				OPbt.style.left=10+3*60+'px';
+   				OPbt.setAttribute('type','button');
+   				<!--alert('position = '+i);-->
+   				var OPTag=i+1;
+   				
+   				OPbt.setAttribute('onclick','setOperationTag('+OPTag+')');
+   				body.appendChild(OPbt);
+
+   		
+   			}
+   				
+   			}
+   		}
+   		//设置数字
+   		function setFristNumber(inputNB)
+   		{
+   
+   			var IPT=Number(inputNB);
+   			if(operation>0){//如果操作符有值 设置第二个运算因子
+   				if(secondNB>0)
+   			{
+   				secondNB=secondNB*10+IPT;
+   			}
+   			else
+   			{
+   				secondNB=IPT;
+   			}
+   			hhh.innerHTML=secondNB.toString();
+   			}
+   			else{//操作符没有值 设置第一份运算因子
+   			if(firstNB>0)
+   			{
+   				firstNB=firstNB*10+IPT;
+   			}
+   			else
+   			{
+   				firstNB=IPT;
+   			}
+           
+   			hhh.innerHTML=firstNB.toString();
+   			}
+   			
+   		}
+   		//设置操作符  
+   		function setOperationTag(operationTag)
+   		{
+   			var operationNB=Number(operationTag);
+   			operation=operationNB;
+   			hhh.innerHTML=operationTag.toString();
+            //这里为了方便及验证多个键值 不对两个因子一一设置
+            //如果参数很多或者包含数组 先将数据处理成jsonString 再由OC解析
+            window.webkit.messageHandlers.OCModel.postMessage({functionName:'operation',firstNB: firstNB,operation:operationTag});
+   		}
+   		
+   		function getResult()
+   		{
+   			var result =0;
+   			switch(operation){
+   				
+   				case 1:{
+   					result=firstNB+secondNB;
+   					
+   				}break;
+   				case 2:{
+   					result=firstNB-secondNB;
+   					
+   				}break;
+   				case 3:{
+   					result=firstNB*secondNB;
+   					
+   				}break;
+   				case 4:{
+   					result=firstNB/secondNB;
+   					
+   				}break;
+   			}
+   			hhh.innerHTML=result.toString();
+           
+            window.webkit.messageHandlers.OCModel.postMessage({functionName:'result',secondNB: secondNB,result:result});
+   		}
+   		
+   		//清除操作
+ 		function clearAllData()
+ 		{
+ 			firstNB=0;
+ 			secondNB=0;
+ 			operation=0;
+            hhh.innerHTML=null;
+ 			
+ 		}
+    </script>
+</body>
+</html>
